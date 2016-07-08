@@ -1,0 +1,50 @@
+{
+  "private": true,
+  "scripts": {
+    "prod": "gulp --production",
+    "dev": "node node_modules\\concurrently\\src\\main.js --raw --kill-others \"npm run webpack:server\" \"npm run webpack:client:dev\"",
+    "webpack:server": "node node_modules\\webpack\\bin\\webpack.js --config webpack\\server.prod.js -d --watch",
+    "webpack:client:dev": "node node_modules\\webpack\\bin\\webpack.js --config webpack\\client.dev.js -d --watch"
+  },
+  "dependencies": {
+    "aphrodite": "0.4.1",
+    "assets-webpack-plugin": "3.4.0",
+    "axios": "0.12.0",
+    "babel-cli": "6.10.1",
+    "babel-core": "6.10.4",
+    "babel-eslint": "6.1.0",
+    "babel-loader": "6.2.4",
+    "babel-plugin-transform-react-constant-elements": "6.9.1",
+    "babel-plugin-transform-react-inline-elements": "6.8.0",
+    "babel-polyfill": "6.9.1",
+    "babel-preset-es2015": "6.9.0",
+    "babel-preset-react": "6.11.1",
+    "babel-preset-stage-0": "6.5.0",
+    "babel-register": "6.9.0",
+    "concurrently": "2.2.0",
+    "deep-assign": "2.0.0",
+    "history": "3.0.0",
+    "immutable": "3.8.1",
+    "json-loader": "0.5.4",
+    "lodash": "4.13.1",
+    "react": "15.2.0",
+    "react-dom": "15.2.0",
+    "react-helmet": "3.1.0",
+    "react-redux": "4.4.5",
+    "react-router": "2.5.2",
+    "redial": "0.4.2",
+    "redux": "3.5.2",
+    "redux-thunk": "2.1.0",
+    "source-map-support": "0.4.1",
+    "vinyl-named": "1.1.0",
+    "webpack": "1.13.1",
+    "webpack-stream": "3.2.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react",
+      "stage-0"
+    ]
+  }
+}
