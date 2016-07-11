@@ -8,8 +8,9 @@ import { trigger } from 'redial';
 import { StyleSheetServer } from 'aphrodite';
 import { configureStore } from './common/store';
 import helmet from 'react-helmet';
-import reducer from './common/createReducer';
-import createRoutes from './common/routes/root';
+import reducer from './createReducer';
+import createRoutes from './routes';
+import Html from './Html';
 
 const req = global.req;
 
@@ -63,58 +64,79 @@ match({ routes, history}, (err, redirectLocation, renderProps) => {
         );
         const head = helmet.rewind();
 
-        print(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-            <meta charSet="utf-8" />
-            <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-            ${head.title.toString()}
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            ${head.meta.toString()}
-            ${head.link.toString()}
-            <style>
-            html {
-                box-sizing: border-box
-            }
+        const props = {
+            head,
+            initialState,
+            ...data,
+        };
 
-            *,
-            *::before,
-            *::after {
-                box-sizing: border-box
-            }
+        const markup = ReactDOM
+            .renderToStaticMarkup(
+                <Html
+                    {...props}
+                />
+            )
+        ;
 
-            html {
-                font-size: 100%;
-                -ms-overflow-style: scrollbar;
-                -webkit-tap-highlight-color: rgba(0,0,0,0);
-                height: 100%;
-            }
+        const html = [
+            '<!DOCTYPE html>',
+            markup,
+        ].join("\n");
 
-            body {
-                font-size: 1rem;
-                background-color: #fff;
-                color: #555;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                font-family: -apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
-            }
+        print(html);
 
-            h1,h2,h3,h4,h5,h6 {
-                margin: 0;
-                padding: 0;
-            }
-            </style>
-            <style data-aphrodite>${data.css.content}</style>
-            </head>
-            <body>
-            <div id="root">${data.html}</div>
-            <script>window.renderedClassNames = ${JSON.stringify(data.css.renderedClassNames)};</script>
-            <script>window.INITIAL_STATE = ${JSON.stringify(initialState)};</script>
-            <script src="js/common.js"></script>
-            <script async src="js/Client.js" ></script>
-            </body>
-            </html>
-        `)
+        // print(`
+        //     <!DOCTYPE html>
+        //     <html lang="en">
+        //     <head>
+        //     <meta charSet="utf-8" />
+        //     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        //     ${head.title.toString()}
+        //     <meta name="viewport" content="width=device-width, initial-scale=1" />
+        //     ${head.meta.toString()}
+        //     ${head.link.toString()}
+        //     <style>
+        //     html {
+        //         box-sizing: border-box
+        //     }
+        //
+        //     *,
+        //     *::before,
+        //     *::after {
+        //         box-sizing: border-box
+        //     }
+        //
+        //     html {
+        //         font-size: 100%;
+        //         -ms-overflow-style: scrollbar;
+        //         -webkit-tap-highlight-color: rgba(0,0,0,0);
+        //         height: 100%;
+        //     }
+        //
+        //     body {
+        //         font-size: 1rem;
+        //         background-color: #fff;
+        //         color: #555;
+        //         -webkit-font-smoothing: antialiased;
+        //         -moz-osx-font-smoothing: grayscale;
+        //         font-family: -apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+        //     }
+        //
+        //     h1,h2,h3,h4,h5,h6 {
+        //         margin: 0;
+        //         padding: 0;
+        //     }
+        //     </style>
+        //     <style data-aphrodite>${data.css.content}</style>
+        //     </head>
+        //     <body>
+        //     <div id="root">${data.html}</div>
+        //     <script>window.renderedClassNames = ${JSON.stringify(data.css.renderedClassNames)};</script>
+        //     <script>window.INITIAL_STATE = ${JSON.stringify(initialState)};</script>
+        //     <script src="js/common.js"></script>
+        //     <script async src="js/Client.js" ></script>
+        //     </body>
+        //     </html>
+        // `)
     }).catch(e => console.log(e));
 });

@@ -18,11 +18,11 @@ module.exports = {
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({name: 'common'}),
-        new webpack.NoErrorsPlugin(),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development'),
-            '__DEV__': true
-        })
+        // new webpack.NoErrorsPlugin(),
+        // new webpack.DefinePlugin({
+        //     'process.env.NODE_ENV': JSON.stringify('development'),
+        //     '__DEV__': true
+        // })
     ],
     module: {
         loaders: [
@@ -36,7 +36,10 @@ module.exports = {
                     presets: [
                         "es2015",
                         "react",
-                        "stage-0"
+                        "stage-0",
+                    ],
+                    plugins: [
+                        "react-html-attrs",
                     ]
                 }
             },
