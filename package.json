@@ -1,8 +1,15 @@
 {
   "private": true,
   "scripts": {
-    "prod": "gulp --production",
-    "dev": "node node_modules\\concurrently\\src\\main.js --raw --kill-others \"npm run webpack:server\" \"npm run webpack:client:dev\"",
+    "start": "bin\\php artisan serve",
+    "dev": "npm run webpack:client:dev",
+    "setup:dev": "npm run setup:dev:sqlite && npm run setup:dev:env && npm run setup:dev:composer && npm run setup:dev:artisan && npm install",
+    "setup:dev:sqlite": "bin\\php -r \"new SQLite3('database\\database.db');\"",
+    "setup:dev:env": "echo APP_ENV=local > .env && echo APP_DEBUG=true >> .env && echo APP_URL=http://localhost >> .env",
+    "setup:dev:composer": "bin\\composer install",
+    "setup:dev:artisan": "npm run setup:dev:artisan:key && npm run setup:dev:artisan:migrate",
+    "setup:dev:artisan:key": "bin\\php artisan key:generate",
+    "setup:dev:artisan:migrate": "bin\\php artisan migrate",
     "webpack:server": "node node_modules\\webpack\\bin\\webpack.js --config webpack\\server.prod.js -d --watch",
     "webpack:client:dev": "node node_modules\\webpack\\bin\\webpack.js --config webpack\\client.dev.js -d --watch"
   },
