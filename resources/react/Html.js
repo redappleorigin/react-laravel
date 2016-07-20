@@ -7,6 +7,10 @@ const Html = ({ head, css, initialState, ...props }) => {
     const title = head.title && head.title.toComponent() || [];
     const meta = head.meta && head.meta.toComponent() || [];
     const link = head.link && head.link.toComponent() || [];
+
+    const { sourceRequest } = initialState;
+    const { protocol, host } = sourceRequest;
+    const baseUrl = `${protocol}://${host}/`;
     // const script = head.script && head.script.toComponent() || [];
 
     return (
@@ -42,8 +46,8 @@ const Html = ({ head, css, initialState, ...props }) => {
                 {/* JavaScripts */}
                 <script dangerouslySetInnerHTML={{__html: `window.renderedClassNames = ${JSON.stringify(css.renderedClassNames)};`}} />
                 <script dangerouslySetInnerHTML={{__html: `window.INITIAL_STATE = ${JSON.stringify(initialState)};`}} />
-                <script src="js/common.js" />
-                <script src="js/Client.js" />
+                <script src={ baseUrl + "js/common.js" } />
+                <script src={ baseUrl + "js/Client.js" } />
 
                 <script
                     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"
