@@ -3,7 +3,6 @@ import Helmet from 'react-helmet';
 import Navigation from './components/Navigation';
 
 const App = ({children, ...props}) => {
-
     return (
         <div id="App">
             {/* Head Defaults */}

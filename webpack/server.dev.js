@@ -3,40 +3,27 @@ const webpack = require('webpack')
 const CONFIG = require('./base')
 
 const {
-    CLIENT_ENTRY,
-    CLIENT_OUTPUT,
-    // SERVER_ENTRY,
+    SERVER_ENTRY,
+    SERVER_OUTPUT,
     PUBLIC_PATH
 } = CONFIG;
 
 module.exports = {
     devtool: 'cheap-module-eval-source-map',
     entry: {
-        Client: CLIENT_ENTRY,
-        // Server: SERVER_ENTRY,
+        Server: SERVER_ENTRY,
     },
     output: {
         filename: '[name].js',
         chunkFilename: '[name].chunk.js',
-        publicPath: PUBLIC_PATH,
-        path: CLIENT_OUTPUT
+        path: SERVER_OUTPUT
     },
-    plugins: [
-        new webpack.optimize.CommonsChunkPlugin({name: 'common'}),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development'),
-            __DEV__: true,
-            __CLIENT__: true,
-            __SERVER__: false,
-        }),
-    ],
     module: {
         loaders: [
             {
                 test: /\.js$/,
                 loader: 'babel',
-                exclude: /(node_modules|server)/,
-                // exclude: /(node_modules)/,
+                exclude: /(node_modules)/,
                 query: {
                     cacheDirectory: true,
                     presets: [
@@ -51,6 +38,14 @@ module.exports = {
             },
         ]
     },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('development'),
+            __DEV__: true,
+            __CLIENT__: false,
+            __SERVER__: true,
+        }),
+    ],
     node: {
         fs: "empty"
     }

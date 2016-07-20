@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+
+import Csrf from '../../components/Csrf';
+import Form from '../../components/Form';
 
 const Login = (props) => (
-    <div class="container">
+    <div id="Login" class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
@@ -10,9 +14,9 @@ const Login = (props) => (
 
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" method="POST" action="/login">
-                            {/*{ csrf_field() }*/}
+                            <Csrf.Field />
 
-                            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                            <div class={ 'form-group' + (props.validation.email ? ' has-error' : '') }>
                                 <label
                                     for="email"
                                     class="col-md-4 control-label"
@@ -26,20 +30,14 @@ const Login = (props) => (
                                         type="email"
                                         class="form-control"
                                         name="email"
-                                        defaultValue="{{ old('email') }}"
+                                        defaultValue={ props.session.old.email || '' }
                                     />
 
-                                    {/*
-                                    @if ($errors->has('email'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('email') }}</strong>
-                                        </span>
-                                    @endif
-                                    */}
+                                    <Form.HelpBlock>{props.validation.email}</Form.HelpBlock>
                                 </div>
                             </div>
 
-                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <div class={ 'form-group' + (props.validation.password ? ' has-error' : '') }>
                                 <label
                                     for="password"
                                     class="col-md-4 control-label"
@@ -55,13 +53,7 @@ const Login = (props) => (
                                         name="password"
                                     />
 
-                                    {/*
-                                    @if ($errors->has('password'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('password') }}</strong>
-                                        </span>
-                                    @endif
-                                    */}
+                                    <Form.HelpBlock>{props.validation.password}</Form.HelpBlock>
                                 </div>
                             </div>
 
@@ -103,4 +95,4 @@ const Login = (props) => (
     </div>
 );
 
-export default Login;
+export default connect((state) => state)(Login);

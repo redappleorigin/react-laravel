@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 // Components
 import Guest from './components/Guest'; // Shown only to users not logged in
@@ -36,4 +37,4 @@ const Bar = ({auth, ...props}) => (
     </nav>
 );
 
-export default Bar;
+export default connect((state) => state)(Bar);

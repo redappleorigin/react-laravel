@@ -1,33 +1,45 @@
-import { createStore, applyMiddleware, compose } from 'redux'
-import thunk from 'redux-thunk'
-import axios from 'axios'
-import createReducer from './createReducer'
+import { createStore, applyMiddleware, compose } from 'redux';
+import { routerMiddleware } from 'react-router-redux';
+import thunk from 'redux-thunk';
+import promiseMiddleware from './middleware/promiseMiddleware';
+import createReducer from './createReducer';
+import createLogger from 'redux-logger';
 
-export function configureStore (initialState) {
-  let store = createStore(createReducer(), initialState, compose(
-    applyMiddleware(
-      thunk.withExtraArgument({ axios })
-    ),
+export function configureStore (initialState, history) {
+    const middleware = [
+        thunk,
+        promiseMiddleware,
+        routerMiddleware(history),
+    ];
 
-    process.env.NODE_ENV === 'development' &&
-    typeof window === 'object' &&
-    typeof window.devToolsExtension !== 'undefined'
-      ? window.devToolsExtension()
-      : f => f
-  ))
+    let store;
 
-  store.asyncReducers = {}
+    if (__DEV__ && __CLIENT__) {
+        middleware.push(createLogger());
+        const reducer = createReducer();
 
-  if (process.env.NODE_ENV === 'development') {
-    if (module.hot) {
-      module.hot.accept('./createReducer', () => store.replaceReducer(require('./createReducer').default))
+        store = createStore(createReducer(), initialState, compose(
+            applyMiddleware(...middleware),
+
+            typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
+        ));
+    } else {
+        store = createStore(createReducer(), initialState, compose(applyMiddleware(...middleware), f => f));
     }
-  }
 
-  return store
+    store.asyncReducers = {}
+
+    if (__DEV__) {
+        if (module.hot) {
+            module.hot.accept('./createReducer', () => store.replaceReducer(require('./createReducer').default));
+        }
+    }
+
+    return store;
 }
 
 export function injectAsyncReducer (store, name, asyncReducer) {
-  store.asyncReducers[name] = asyncReducer
-  store.replaceReducer(createReducer(store.asyncReducers))
+    store.asyncReducers[name] = asyncReducer;
+
+    store.replaceReducer(createReducer(store.asyncReducers));
 }

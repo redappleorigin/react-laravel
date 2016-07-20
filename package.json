@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "start": "bin\\php artisan serve",
-    "dev": "npm run webpack:client:dev",
+    "dev": "npm run webpack:concurrently:dev",
     "setup:dev": "npm run setup:dev:sqlite && npm run setup:dev:env && npm run setup:dev:composer && npm run setup:dev:artisan && npm install",
     "setup:dev:sqlite": "bin\\php -r \"new SQLite3('database\\database.db');\"",
     "setup:dev:env": "echo APP_ENV=local > .env && echo APP_DEBUG=true >> .env && echo APP_URL=http://localhost >> .env && echo APP_KEY=SomeRandomString >> .env",
@@ -10,7 +10,8 @@
     "setup:dev:artisan": "npm run setup:dev:artisan:key && npm run setup:dev:artisan:migrate",
     "setup:dev:artisan:key": "bin\\php artisan key:generate",
     "setup:dev:artisan:migrate": "bin\\php artisan migrate",
-    "webpack:server": "node node_modules\\webpack\\bin\\webpack.js --config webpack\\server.prod.js -d --watch",
+    "webpack:concurrently:dev": "concurrently --kill-others --raw \"npm run webpack:server:dev\" \"npm run webpack:client:dev\"",
+    "webpack:server:dev": "node node_modules\\webpack\\bin\\webpack.js --config webpack\\server.dev.js -d --watch",
     "webpack:client:dev": "node node_modules\\webpack\\bin\\webpack.js --config webpack\\client.dev.js -d --watch"
   },
   "dependencies": {
@@ -39,13 +40,15 @@
     "react-dom": "15.2.0",
     "react-helmet": "3.1.0",
     "react-redux": "4.4.5",
-    "react-router": "2.5.2",
+    "react-router": "2.6.0",
+    "react-router-redux": "4.0.5",
     "redial": "0.4.2",
     "redux": "3.5.2",
+    "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
     "source-map-support": "0.4.1",
     "vinyl-named": "1.1.0",
-    "webpack": "1.13.1",
+    "webpack": "2.1.0-beta.19",
     "webpack-stream": "3.2.0"
   },
   "babel": {
