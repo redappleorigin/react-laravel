@@ -9,7 +9,7 @@ const {
 } = CONFIG;
 
 module.exports = {
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval',
     entry: {
         Server: SERVER_ENTRY,
     },
