@@ -10,10 +10,20 @@ const {
 } = CONFIG;
 
 module.exports = {
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval',
     entry: {
-        Client: CLIENT_ENTRY,
-        // Server: SERVER_ENTRY,
+        Client: [
+            'react-hot-loader/patch',
+
+            // The script refreshing the browser on none hot updates
+            'webpack-dev-server/client?http://localhost:8080',
+
+            // For hot style updates
+            'webpack/hot/only-dev-server',
+
+            // Main app
+            CLIENT_ENTRY
+        ],
     },
     output: {
         filename: '[name].js',
@@ -22,7 +32,14 @@ module.exports = {
         path: CLIENT_OUTPUT
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({name: 'common'}),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin(),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'common',
+            minChunks: (module) => {
+                return module.resource && module.resource.indexOf('node_modules') !== -1
+            },
+        }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('development'),
             __DEV__: true,
@@ -36,22 +53,30 @@ module.exports = {
                 test: /\.js$/,
                 loader: 'babel',
                 exclude: /(node_modules|server)/,
-                // exclude: /(node_modules)/,
                 query: {
                     cacheDirectory: true,
                     presets: [
-                        "es2015",
-                        "react",
-                        "stage-0",
+                        'es2015',
+                        'react',
+                        'stage-0',
                     ],
                     plugins: [
-                        "react-html-attrs",
+                        'react-html-attrs',
+                        'react-hot-loader/babel',
                     ]
                 }
             },
         ]
     },
     node: {
-        fs: "empty"
-    }
+        fs: 'empty'
+    },
+    devServer: {
+        hot: true,
+        noInfo: true,
+        historyApiFallback: true,
+        stats: {
+            colors: true,
+        },
+    },
 }
