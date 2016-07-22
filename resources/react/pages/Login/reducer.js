@@ -1,15 +1,18 @@
 // Actions
 const LOAD = 'react/pages/Login/LOAD';
-const LOAD_FAIL = 'react/pages/Login/LOAD_FAIL';
-const LOAD_SUCCESS = 'react/pages/Login/LOAD_SUCCESS';
+const LOAD_FAILURE = LOAD + '_FAILURE';
+const LOAD_REQUEST = LOAD + '_REQUEST';
+const LOAD_SUCCESS = LOAD + '_SUCCESS';
 
 const LOGIN = 'react/pages/Login/LOGIN';
-const LOGIN_FAIL = 'react/pages/Login/LOGIN_FAIL';
-const LOGIN_SUCCESS = 'react/pages/Login/LOGIN_SUCCESS';
+const LOGIN_FAILURE = LOGIN + '_FAILURE';
+const LOGIN_REQUEST = LOGIN + '_REQUEST';
+const LOGIN_SUCCESS = LOGIN + '_SUCCESS';
 
 const LOGOUT = 'react/pages/Login/LOGOUT';
-const LOGOUT_FAIL = 'react/pages/Login/LOGOUT_FAIL';
-const LOGOUT_SUCCESS = 'react/pages/Login/LOGOUT_SUCCESS';
+const LOGOUT_FAILURE = LOGOUT + '_FAILURE';
+const LOGOUT_REQUEST = LOGOUT + '_REQUEST';
+const LOGOUT_SUCCESS = LOGOUT + '_SUCCESS';
 
 // Starting Data
 const initialState = {
@@ -29,14 +32,15 @@ const initialState = {
 // Reducer
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
-        case LOAD: {
+        // Initial Request to Load the component
+        case LOAD_REQUEST: {
             return {
                 ...state,
                 loading: true,
             };
         }
 
-        case LOAD_FAIL: {
+        case LOAD_FAILURE: {
             return {
                 ...state,
                 loading: false,
@@ -54,14 +58,15 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
 
-        case LOGIN: {
+        // Login Response
+        case LOGIN_REQUEST: {
             return {
                 ...state,
                 loggingIn: true,
             };
         }
 
-        case LOGIN_FAIL: {
+        case LOGIN_FAILURE: {
             return {
                 ...state,
                 loggingIn: false,
@@ -78,14 +83,15 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
 
-        case LOGOUT: {
+        // Logout Response
+        case LOGOUT_REQUEST: {
             return {
                 ...state,
                 loggingOut: true,
             };
         }
 
-        case LOGOUT_FAIL: {
+        case LOGOUT_FAILURE: {
             return {
                 ...state,
                 loggingOut: false,
@@ -101,7 +107,7 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
 
-        // do reducer stuff
+        // Default Response
         default: {
             return state;
         }
@@ -111,14 +117,14 @@ export default function reducer(state = initialState, action = {}) {
 // Action Creators
 export function load() {
     return {
-        types: [LOAD, LOAD_FAIL, LOAD_SUCCESS],
+        type: LOAD,
         promise: (client) => client.get('/loadAuth')
     }
 }
 
 export function login(name) {
     return {
-        types: [LOGIN, LOGIN_FAIL, LOGIN_SUCCESS],
+        type: LOGIN,
         promise: (client) => client.post('/auth/login', {
             data: {
                 name,
@@ -129,7 +135,7 @@ export function login(name) {
 
 export function logout() {
     return {
-        types: [LOGOUT, LOGOUT_FAIL, LOGOUT_SUCCESS],
-        promise: (client) => client.get('/auth/logout'),
+        type: LOGOUT,
+        promise: (client) => client('/logout'),
     };
 }

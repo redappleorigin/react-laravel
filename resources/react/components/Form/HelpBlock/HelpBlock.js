@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 const HelpBlock = ({children}) => {
     if (!children) {
@@ -10,6 +10,10 @@ const HelpBlock = ({children}) => {
             <strong>{children}</strong>
         </span>
     );
+};
+
+HelpBlock.propTypes = {
+    children: PropTypes.array,
 };
 
 export default HelpBlock;

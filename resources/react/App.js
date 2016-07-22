@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Helmet from 'react-helmet';
 import Navigation from './components/Navigation';
 
@@ -54,6 +54,10 @@ const App = ({children, ...props}) => {
             { children }
         </div>
     );
+};
+
+App.propTypes = {
+    children: PropTypes.object.isRequired,
 };
 
 export default App;

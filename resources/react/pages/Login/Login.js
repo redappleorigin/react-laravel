@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -94,5 +94,10 @@ const Login = (props) => (
         </div>
     </div>
 );
+
+Login.propTypes = {
+    session: PropTypes.object.isRequired,
+    validation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+};
 
 export default connect((state) => state)(Login);

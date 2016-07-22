@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -7,7 +7,7 @@ import Guest from './components/Guest'; // Shown only to users not logged in
 import LoggedIn from './components/LoggedIn'; // Shown only to logged in users
 import Header from './components/Header'; // Navigation Header
 
-const Bar = ({auth, ...props}) => (
+const Bar = ({auth}) => (
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <Header />
@@ -36,5 +36,9 @@ const Bar = ({auth, ...props}) => (
         </div>
     </nav>
 );
+
+Bar.propTypes = {
+    auth: PropTypes.object.isRequired,
+};
 
 export default connect((state) => state)(Bar);

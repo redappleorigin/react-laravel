@@ -11,7 +11,9 @@ $req = [
 
 $auth = [
     'guest' => Auth::guest(),
-    'user' => Auth::user(),
+    'user' => [
+        'name' => Auth::user()->name ?? null,
+    ],
 ];
 
 $flash = $request
@@ -19,7 +21,10 @@ $flash = $request
     ->all()
 ;
 
-$session = array_merge($flash['flash'], ['status' => session('status')]);
+$session = array_merge(
+    $flash['flash'] ?? ['old' => [], 'new' => []],
+    ['status' => session('status')]
+);
 
 $csrf = [
     'token' => csrf_token(),
@@ -32,6 +37,7 @@ $scripts = [
     "var console = {warn: function(){}, error: print, log: function(){}};",
     "var global = global || this;",
     "var window = window || this;",
+    "var self = self || this;",
     file_get_contents(base_path('resources/server/Server.js')),
 ];
 

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import * as loginActions from '../../../../pages/Login/reducer';
 
-const LoggedIn = (props) => (
+const LoggedIn = ({auth, logout}) => (
     <ul class="nav navbar-nav navbar-right">
         {/* Authentication Links */}
         <li class="dropdown">
@@ -12,12 +14,12 @@ const LoggedIn = (props) => (
                 role="button"
                 aria-expanded="false"
             >
-                { props.user.name } <span class="caret" />
+                { auth.user.name } <span class="caret" />
             </Link>
 
             <ul class="dropdown-menu" role="menu">
                 <li>
-                    <Link to="/logout">
+                    <Link to="/logout" onClick={logout}>
                         <i class="fa fa-btn fa-sign-out" />Logout
                     </Link>
                 </li>
@@ -26,4 +28,8 @@ const LoggedIn = (props) => (
     </ul>
 );
 
-export default LoggedIn;
+LoggedIn.propTypes = {
+    auth: PropTypes.object.isRequired,
+}
+
+export default connect((state) => state, loginActions)(LoggedIn);

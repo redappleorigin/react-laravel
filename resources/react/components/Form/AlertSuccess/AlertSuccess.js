@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 const AlertSuccess = ({children}) => {
     if (!children) {
@@ -10,6 +10,10 @@ const AlertSuccess = ({children}) => {
             {children}
         </div>
     );
+};
+
+AlertSuccess.propTypes = {
+    children: PropTypes.array,
 };
 
 export default AlertSuccess;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -48,5 +48,10 @@ const Email = (props) => (
         </div>
     </div>
 );
+
+Email.propTypes = {
+    session: PropTypes.object.isRequired,
+    validation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+};
 
 export default connect((state) => state)(Email);

@@ -6,7 +6,7 @@ import { createMemoryHistory, RouterContext, match } from 'react-router';
 import { Provider } from 'react-redux';
 import { trigger } from 'redial';
 import { StyleSheetServer } from 'aphrodite';
-import { configureStore } from './store';
+import { configureStore } from './configureStore';
 import preRenderMiddleware from './middleware/preRenderMiddleware';
 import helmet from 'react-helmet';
 import reducer from './createReducer';
