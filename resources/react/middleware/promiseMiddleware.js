@@ -5,22 +5,48 @@
 
 export default function promiseMiddleware() {
     return next => action => {
-        const { promise, type, ...rest } = action;
+        if (typeof action === 'function') {
+            return action(dispatch, getState);
+        }
 
-        if (!promise) return next(action);
+        const { promise, type, ...rest } = action; // eslint-disable-line no-redeclare
+        if (!promise) {
+            return next(action);
+        }
 
-        const SUCCESS = type + '_SUCCESS';
         const REQUEST = type + '_REQUEST';
+        const SUCCESS = type + '_SUCCESS';
         const FAILURE = type + '_FAILURE';
-        next({ ...rest, type: REQUEST });
-        return promise
-        .then(res => {
-            next({ ...rest, res, type: SUCCESS });
-            return true;
-        })
-        .catch(error => {
-            next({ ...rest, error, type: FAILURE });
-            return false;
+
+        next({...rest, type: REQUEST});
+
+        const actionPromise = promise(fetch);
+
+        actionPromise.then(
+            (response) => {
+                if (response.status >= 300) {
+                    const error = new Error(response.statusText);
+                    error.response = response;
+
+                    throw error;
+                }
+
+                next({
+                    ...rest,
+                    result: response.text(),
+                    type: SUCCESS
+                });
+            }
+        ).catch((error)=> {
+            console.error('MIDDLEWARE ERROR:', error);
+
+            next({
+                ...rest,
+                error,
+                type: FAILURE
+            });
         });
+
+        return actionPromise;
     };
 }
