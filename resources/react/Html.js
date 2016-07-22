@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Helmet from 'react-helmet';
 
 // This is only used for server rendering!!!
@@ -62,6 +62,13 @@ const Html = ({ head, css, initialState, ...props }) => {
             </body>
         </html>
     );
+};
+
+Html.propTypes = {
+    head: PropTypes.object.isRequired,
+    css: PropTypes.object.isRequired,
+    initialState: PropTypes.object.isRequired,
+    html: PropTypes.string.isRequired,
 };
 
 export default Html;
