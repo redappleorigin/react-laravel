@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -92,5 +92,10 @@ const Register = (props) => (
         </div>
     </div>
 );
+
+Register.propTypes = {
+    session: PropTypes.object.isRequired,
+    validation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+};
 
 export default connect((state) => state)(Register);
