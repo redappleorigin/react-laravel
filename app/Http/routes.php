@@ -27,10 +27,3 @@ Route::get('/users', function() {
         ->toArray()
     ;
 });
-
-if (config('app.debug'))
-{
-    Route::get('/js/{path}', function($path) {
-        return file_get_contents('http://localhost:8080/js/' . $path);
-    });
-}
