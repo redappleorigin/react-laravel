@@ -1,5 +1,12 @@
 <?php
 
+function logToPrompt($message)
+{
+    $out = fopen('php://stdout', 'w'); //output handler
+    fputs($out, "${message}.\n"); //writing output operation
+    fclose($out); //closing handler
+}
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
@@ -10,6 +17,8 @@
 $uri = urldecode(
     parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
 );
+
+logToPrompt($uri);
 
 // This file allows us to emulate Apache's "mod_rewrite" functionality from the
 // built-in PHP web server. This provides a convenient way to test a Laravel

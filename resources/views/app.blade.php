@@ -26,6 +26,18 @@ $session = array_merge(
     ['status' => session('status')]
 );
 
+if (count($session['old']) > 0)
+{
+    $session['old'] = array_except(
+        $request->old() ?? [],
+        [
+            'token',
+            'password',
+            'password_confirmation',
+        ]
+    );
+}
+
 $csrf = [
     'token' => csrf_token(),
 ];
@@ -38,7 +50,7 @@ $scripts = [
     "var global = global || this;",
     "var window = window || this;",
     "var self = self || this;",
-    file_get_contents(base_path('resources/server/Server.js')),
+    file_get_contents(base_path('client/build/Server.js')),
 ];
 
 $concatenated = implode("\n", $scripts);
