@@ -12,10 +12,6 @@ import Html from './Html';
 const req = PHP.req;
 
 const clientConfig = {
-    // sourceRequest: {
-    //     protocol: req.headers['x-forwarded-proto'] || req.protocol,
-    //     host: req.headers.host,
-    // },
     auth: PHP.auth,
     csrf: PHP.csrf,
     session: PHP.session,

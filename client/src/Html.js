@@ -21,6 +21,10 @@ const Html = ({ head, css, initialState, ...props }) => {
                 { title }
 
                 {/* Meta */}
+                <meta
+                    name="csrf-token"
+                    content={ initialState.csrf.token }
+                />
                 { meta }
 
                 {/* Styles && Fonts */}

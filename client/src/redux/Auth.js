@@ -26,6 +26,7 @@ const initialState = {
     loggingOut: false,
     logoutError: null,
 
+    guest: true,
     user: null,
 };
 
@@ -46,7 +47,7 @@ export default function reducer(state = initialState, action = {}) {
                 loading: false,
                 loaded: false,
                 loginError: action.error,
-            }
+            };
         }
 
         case LOAD_SUCCESS: {
@@ -55,7 +56,7 @@ export default function reducer(state = initialState, action = {}) {
                 loading: false,
                 loaded: true,
                 user: action.result,
-            }
+            };
         }
 
         // Login Response
@@ -72,15 +73,15 @@ export default function reducer(state = initialState, action = {}) {
                 loggingIn: false,
                 user: null,
                 loginError: action.error,
-            }
+            };
         }
 
         case LOGIN_SUCCESS: {
             return {
                 ...state,
                 loggingIn: false,
-                user: action.result,
-            }
+                ...action.result,
+            };
         }
 
         // Logout Response
@@ -96,7 +97,7 @@ export default function reducer(state = initialState, action = {}) {
                 ...state,
                 loggingOut: false,
                 logoutError: action.error,
-            }
+            };
         }
 
         case LOGOUT_SUCCESS: {
@@ -104,7 +105,7 @@ export default function reducer(state = initialState, action = {}) {
                 ...state,
                 loggingOut: false,
                 user: null,
-            }
+            };
         }
 
         // Default Response
@@ -122,13 +123,24 @@ export function load() {
     }
 }
 
-export function login(name) {
+export function login(fields) {
+    const form = new FormData();
+
+    for (const key in fields) {
+        if (fields.hasOwnProperty(key)) {
+            form.append(key, fields[key]);
+        }
+    }
+
     return {
         type: LOGIN,
-        promise: (client) => client.post('/auth/login', {
-            data: {
-                name,
-            }
+        promise: (client) => client('/login', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'accept': 'application/json',
+            },
+            body: form,
         }),
     };
 }
@@ -136,6 +148,6 @@ export function login(name) {
 export function logout() {
     return {
         type: LOGOUT,
-        promise: (client) => client.get('/logout'),
+        promise: (client) => client('/logout'),
     };
 }

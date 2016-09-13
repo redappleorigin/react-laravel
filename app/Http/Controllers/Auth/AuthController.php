@@ -7,6 +7,10 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use App\Http\Request;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 
 class AuthController extends Controller
 {
@@ -28,7 +32,7 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/dashboard';
 
     protected $loginView = 'app';
 
@@ -41,7 +45,10 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+        $this->middleware(
+            $this->guestMiddleware(),
+            ['except' => 'logout']
+        );
     }
 
     /**
@@ -72,5 +79,59 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  bool  $throttles
+     * @return \Illuminate\Http\Response
+     */
+    protected function handleUserWasAuthenticated(Request $request, $throttles)
+    {
+        if ($throttles)
+        {
+            $this->clearLoginAttempts($request);
+        }
+
+        if (method_exists($this, 'authenticated'))
+        {
+            return $this->authenticated($request, Auth::guard($this->getGuard())->user());
+        }
+
+        if ($request->ajax() || $request->wantsJson())
+        {
+            $auth = [
+                'guest' => Auth::guest(),
+                'user' => [
+                    'name' => Auth::user()->name ?? null,
+                ],
+            ];
+
+            return response($auth, 200);
+        }
+
+        return redirect()->intended($this->redirectPath());
+    }
+
+    /**
+     * Get the failed login response instance.
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson())
+        {
+            $errors = [
+                $this->loginUsername() => $this->getFailedLoginMessage(),
+            ];
+
+            return response($errors, 401);
+        }
+
+        return parent::sendFailedLoginResponse();
     }
 }
