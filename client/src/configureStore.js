@@ -15,10 +15,6 @@ export function configureStore (initialState, history) {
     let store;
 
     if (__DEV__ && __CLIENT__) {
-        const createLogger = require('redux-logger');
-
-        middleware.push(createLogger());
-
         store = createStore(createReducer(), initialState, compose(
             applyMiddleware(...middleware),
 

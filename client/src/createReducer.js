@@ -1,11 +1,6 @@
 import { combineReducers } from 'redux';
 import { routerReducer as routing } from 'react-router-redux';
 
-// const sourceRequest = (state = {
-//   host: '',
-//   protocol: '',
-// }, action) => state;
-
 const auth = (state = {
     guest: true,
     user: {},
@@ -28,7 +23,6 @@ export default function createReducer (asyncReducers) {
     return combineReducers({
         auth,
         routing,
-        // sourceRequest,
         ...allReducers,
         ...asyncReducers,
     });

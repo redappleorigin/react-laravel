@@ -1,7 +1,21 @@
-// TODO: we can split this file into several files (pre-eject, post-eject, test)
-// and use those instead. This way we don't need to branch here.
-
 var path = require('path');
+
+// We support resolving modules according to `NODE_PATH`.
+// This lets you use absolute paths in imports inside large monorepos:
+// https://github.com/facebookincubator/create-react-app/issues/253.
+
+// It works similar to `NODE_PATH` in Node itself:
+// https://nodejs.org/api/modules.html#modules_loading_from_the_global_folders
+
+// We will export `nodePaths` as an array of absolute paths.
+// It will then be used by Webpack configs.
+// Jest doesn’t need this because it already handles `NODE_PATH` out of the box.
+
+var nodePaths = (process.env.NODE_PATH || '')
+    .split(process.platform === 'win32' ? ';' : ':')
+    .filter(Boolean)
+    .map(p => path.resolve(p))
+;
 
 function resolveApp(relativePath) {
     return path.resolve(relativePath);
@@ -17,4 +31,5 @@ module.exports = {
     eslint: resolveApp('client/config/eslint.js'),
     ownNodeModules: resolveApp('node_modules'),
     serverBuild: resolveApp('client/build'),
+    nodePaths: nodePaths,
 };
