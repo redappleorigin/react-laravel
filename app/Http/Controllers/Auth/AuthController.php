@@ -134,4 +134,26 @@ class AuthController extends Controller
 
         return parent::sendFailedLoginResponse();
     }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        Auth::guard($this->getGuard())->logout();
+
+        if ($request->ajax() || $request->wantsJson())
+        {
+            $auth = [
+                'guest' => Auth::guest(),
+                'user' => null,
+            ];
+
+            return response($auth, 201);
+        }
+
+        return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
+    }
 }

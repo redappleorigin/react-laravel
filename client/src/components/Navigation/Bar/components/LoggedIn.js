@@ -1,35 +1,51 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import * as authActions from '../../../../redux/Auth';
 
-const LoggedIn = ({auth, logout}) => (
-    <ul class="nav navbar-nav navbar-right">
-        {/* Authentication Links */}
-        <li class="dropdown">
-            <Link
-                to="#"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-                role="button"
-                aria-expanded="false"
-            >
-                { auth.user.name } <span class="caret" />
-            </Link>
+import { logout } from '../../../../redux/Auth';
 
-            <ul class="dropdown-menu" role="menu">
-                <li>
-                    <Link to="/logout" onClick={ logout }>
-                        <i class="fa fa-btn fa-sign-out" />Logout
+class LoggedIn extends Component {
+    handleLogout(event) {
+        event.preventDefault();
+
+        const { dispatch } = this.props;
+
+        dispatch(logout());
+    }
+
+    render() {
+        const { auth } = this.props;
+        const username = (auth.user && auth.user.name) || null;
+
+        return (
+            <ul class="nav navbar-nav navbar-right">
+                {/* Authentication Links */}
+                <li class="dropdown">
+                    <Link
+                        to="#"
+                        class="dropdown-toggle"
+                        data-toggle="dropdown"
+                        role="button"
+                        aria-expanded="false"
+                    >
+                        { username } <span class="caret" />
                     </Link>
+
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <Link to="/logout" onClick={ this.handleLogout.bind(this) }>
+                                <i class="fa fa-btn fa-sign-out" />Logout
+                            </Link>
+                        </li>
+                    </ul>
                 </li>
             </ul>
-        </li>
-    </ul>
-);
+        );
+    }
+}
 
 LoggedIn.propTypes = {
     auth: PropTypes.object.isRequired,
 }
 
-export default connect((state) => state, authActions)(LoggedIn);
+export default connect((state) => state)(LoggedIn);

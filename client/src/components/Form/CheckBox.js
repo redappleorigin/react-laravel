@@ -19,16 +19,12 @@ const CheckBox = ({ label, wrapper, ...checkbox_props }) => {
     const label_props = (label && label.props) || {};
     const wrapper_props = (wrapper && wrapper.props) || {};
 
-    // console.log('okay');
-    //
-    // return null;
-
     if (!!label) {
         return (
             <CheckBoxWrapper { ...wrapper_props }>
                 <Label { ...label_props }>
                     { checkbox }
-                    { label.value }
+                    { label.value || '' }
                 </Label>
             </CheckBoxWrapper>
         );
