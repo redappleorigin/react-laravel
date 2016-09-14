@@ -51,8 +51,8 @@ const Html = ({ head, css, initialState, ...props }) => {
                 {/* JavaScripts */}
                 <script dangerouslySetInnerHTML={{__html: `window.renderedClassNames = ${JSON.stringify(css.renderedClassNames)};`}} />
                 <script dangerouslySetInnerHTML={{__html: `window.INITIAL_STATE = ${JSON.stringify(initialState)};`}} />
-                <script src="js/common.js" />
-                <script src="js/Client.js" />
+                <script src="/js/common.js" />
+                <script src="/js/Client.js" />
 
                 <script
                     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"

@@ -1,5 +1,5 @@
 import App from './containers/App';
-
+import AuthReducer from './redux/Auth';
 import { injectAsyncReducer } from './configureStore';
 
 function errorLoading(err) {
@@ -11,6 +11,9 @@ function loadRoute(cb) {
 }
 
 export default function createRoutes (store) {
+    // Auth is used by the entire application so inject it first!
+    injectAsyncReducer(store, 'auth', AuthReducer);
+
     const requireAuth = (nextState, replace, callback) => {
         const { auth: { guest }} = store.getState();
 
@@ -25,11 +28,11 @@ export default function createRoutes (store) {
     };
 
     const redirectAuth = (nextState, replace, callback) => {
-        const { auth: { guest, user: { name } }} = store.getState();
+        const { auth: { guest }} = store.getState();
 
-        if (!guest && name) {
+        if (!guest) {
             replace({
-                pathname: '/',
+                pathname: '/dashboard',
             });
         }
 
@@ -46,21 +49,9 @@ export default function createRoutes (store) {
                 getComponent (location, cb) {
                     if (__SERVER__) {
                         const Login = require('./containers/Login/Login').default;
-                        const reducer = require('./redux/Auth').default;
-                        injectAsyncReducer(store, 'auth', reducer);
 
                         return cb(null, Login);
                     }
-
-                    System
-                        .import('./redux/Auth')
-                        .then((module) => {
-                            injectAsyncReducer(store, 'auth', module.default);
-
-                            return loadRoute(cb);
-                        })
-                        .catch(errorLoading)
-                    ;
 
                     System
                         .import('./containers/Login/Login')
@@ -72,6 +63,7 @@ export default function createRoutes (store) {
             {
                 path: 'dashboard',
                 onEnter: requireAuth,
+                onChange: requireAuth,
                 getComponent (location, cb) {
                     if (__SERVER__) {
                         const Dashboard = require('./containers/Dashboard/Dashboard').default;

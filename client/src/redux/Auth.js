@@ -14,6 +14,16 @@ const LOGOUT_FAILURE = LOGOUT + '_FAILURE';
 const LOGOUT_REQUEST = LOGOUT + '_REQUEST';
 const LOGOUT_SUCCESS = LOGOUT + '_SUCCESS';
 
+const PASSWORD_RESET_EMAIL = 'Auth/PASSWORD_RESET_EMAIL';
+const PASSWORD_RESET_EMAIL_FAILURE = PASSWORD_RESET_EMAIL + '_FAILURE';
+const PASSWORD_RESET_EMAIL_REQUEST = PASSWORD_RESET_EMAIL + '_REQUEST';
+const PASSWORD_RESET_EMAIL_SUCCESS = PASSWORD_RESET_EMAIL + '_SUCCESS';
+
+const RESET_PASSWORD = 'Auth/RESET_PASSWORD';
+const RESET_PASSWORD_FAILURE = LOGOUT + '_FAILURE';
+const RESET_PASSWORD_REQUEST = LOGOUT + '_REQUEST';
+const RESET_PASSWORD_SUCCESS = LOGOUT + '_SUCCESS';
+
 // Starting Data
 const initialState = {
     loaded: false,
@@ -25,6 +35,12 @@ const initialState = {
 
     loggingOut: false,
     logoutError: null,
+
+    sendingPassordResetEmail: false,
+    passwordResetEmailError: null,
+
+    resettingPassword: false,
+    resetPasswordError: null,
 
     guest: true,
     user: null,
@@ -104,7 +120,55 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 loggingOut: false,
-                user: null,
+                ...action.result,
+            };
+        }
+
+        // Password Reset Email Response
+        case PASSWORD_RESET_EMAIL_REQUEST: {
+            return {
+                ...state,
+                sendingPassordResetEmail: true,
+            };
+        }
+
+        case PASSWORD_RESET_EMAIL_FAILURE: {
+            return {
+                ...state,
+                sendingPassordResetEmail: false,
+                passwordResetEmailError: action.error,
+            };
+        }
+
+        case PASSWORD_RESET_EMAIL_SUCCESS: {
+            return {
+                ...state,
+                sendingPassordResetEmail: false,
+                passwordResetEmailError: null,
+            };
+        }
+
+        // Reset Password Response
+        case RESET_PASSWORD_REQUEST: {
+            return {
+                ...state,
+                resettingPassword: true,
+            };
+        }
+
+        case RESET_PASSWORD_FAILURE: {
+            return {
+                ...state,
+                resettingPassword: false,
+                resetPasswordError: action.error,
+            };
+        }
+
+        case RESET_PASSWORD_SUCCESS: {
+            return {
+                ...state,
+                resettingPassword: false,
+                resetPasswordError: null,
             };
         }
 
@@ -115,6 +179,18 @@ export default function reducer(state = initialState, action = {}) {
     }
 }
 
+const serialize = (fields) => {
+    const form = new FormData();
+
+    for (const key in fields) {
+        if (fields.hasOwnProperty(key)) {
+            form.append(key, fields[key]);
+        }
+    }
+
+    return form;
+};
+
 // Action Creators
 export function load() {
     return {
@@ -124,13 +200,7 @@ export function load() {
 }
 
 export function login(fields) {
-    const form = new FormData();
-
-    for (const key in fields) {
-        if (fields.hasOwnProperty(key)) {
-            form.append(key, fields[key]);
-        }
-    }
+    const form = serialize(fields);
 
     return {
         type: LOGIN,
@@ -148,6 +218,44 @@ export function login(fields) {
 export function logout() {
     return {
         type: LOGOUT,
-        promise: (client) => client('/logout'),
+        promise: (client) => client('/logout', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'accept': 'application/json',
+            },
+        }),
+    };
+}
+
+export function passwordResetEmail(fields) {
+    const form = serialize(fields);
+
+    return {
+        type: PASSWORD_RESET_EMAIL,
+        promise: (client) => client('/password/email', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'accept': 'application/json',
+            },
+            body: form,
+        }),
+    };
+}
+
+export function resetPassword(fields) {
+    const form = serialize(fields);
+
+    return {
+        type: RESET_PASSWORD,
+        promise: (client) => client('/password/reset', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'accept': 'application/json',
+            },
+            body: form,
+        }),
     };
 }

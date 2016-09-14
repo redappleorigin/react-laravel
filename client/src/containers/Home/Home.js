@@ -1,7 +1,9 @@
 import React from 'react';
 
+import { Container } from '../../components/Layout';
+
 const Home = () => (
-    <div id="Home" class="container">
+    <Container id="Home">
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
@@ -13,7 +15,7 @@ const Home = () => (
                 </div>
             </div>
         </div>
-    </div>
+    </Container>
 );
 
 export default Home;

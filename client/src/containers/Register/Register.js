@@ -2,10 +2,11 @@ import React, { PropTypes } from 'react';
 
 import { connect } from 'react-redux';
 
+import { Container } from '../../components/Layout';
 import Form from '../../components/Form';
 
 const Register = (props) => (
-    <div id="Register" class="container">
+    <Container id="Register">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
@@ -89,7 +90,7 @@ const Register = (props) => (
                 </div>
             </div>
         </div>
-    </div>
+    </Container>
 );
 
 Register.propTypes = {
