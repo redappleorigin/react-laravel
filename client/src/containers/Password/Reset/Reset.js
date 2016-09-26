@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import serialize from 'form-serialize';
+import { push } from 'react-router-redux';
 
 import { Container } from '../../../components/Layout';
 import Form from '../../../components/Form';
@@ -12,6 +13,20 @@ import { resetPassword } from '../../../redux/Auth';
  * This page is shown after the password email has been sent
  */
 class Reset extends Component {
+    componentWillReceiveProps(nextProps) {
+        const { dispatch } = this.props;
+
+        // if the current props don't match the new props
+        // and the new auth.guest is false
+        // redirect to the dashboard
+        if (
+            (this.props.auth.guest !== nextProps.auth.guest) &&
+            !nextProps.auth.guest
+        ) {
+            dispatch(push('/dashboard'));
+        }
+    }
+
     handleSubmit(event) {
         // Prevent the default form submission
         event.preventDefault();
@@ -30,12 +45,14 @@ class Reset extends Component {
     render() {
         const props = this.props;
 
-        console.log(this.props.auth.resetPasswordError);
-
         const errors = {
             email: props.validation.email || (props.auth.resetPasswordError && props.auth.resetPasswordError.email),
             password: props.validation.password || (props.auth.resetPasswordError && props.auth.resetPasswordError.password),
             password_confirmation: props.validation.password_confirmation || (props.auth.resetPasswordError && props.auth.resetPasswordError.password_confirmation),
+        };
+
+        const success = {
+            status: props.session.status || props.auth.resetPasswordStatus,
         };
 
         return (
@@ -46,6 +63,8 @@ class Reset extends Component {
                             <div class="panel-heading">Reset Password</div>
 
                             <div class="panel-body">
+                                <Form.AlertSuccess>{ success.status }</Form.AlertSuccess>
+
                                 <Form
                                     class="form-horizontal"
                                     role="form"

@@ -1,6 +1,6 @@
 import App from './containers/App';
-import AuthReducer from './redux/Auth';
-import { injectAsyncReducer } from './configureStore';
+// takes (store, reducer name, reducer function)
+// import { injectAsyncReducer } from './configureStore';
 
 function errorLoading(err) {
     console.error('Dynamic page loading failed', err);
@@ -12,7 +12,7 @@ function loadRoute(cb) {
 
 export default function createRoutes (store) {
     // Auth is used by the entire application so inject it first!
-    injectAsyncReducer(store, 'auth', AuthReducer);
+    // injectAsyncReducer(store, 'auth', AuthReducer);
 
     const requireAuth = (nextState, replace, callback) => {
         const { auth: { guest }} = store.getState();

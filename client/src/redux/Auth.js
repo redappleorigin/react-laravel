@@ -19,10 +19,15 @@ const PASSWORD_RESET_EMAIL_FAILURE = PASSWORD_RESET_EMAIL + '_FAILURE';
 const PASSWORD_RESET_EMAIL_REQUEST = PASSWORD_RESET_EMAIL + '_REQUEST';
 const PASSWORD_RESET_EMAIL_SUCCESS = PASSWORD_RESET_EMAIL + '_SUCCESS';
 
+const REGISTER = 'Auth/REGISTER';
+const REGISTER_FAILURE = REGISTER + '_FAILURE';
+const REGISTER_REQUEST = REGISTER + '_REQUEST';
+const REGISTER_SUCCESS = REGISTER + '_SUCCESS';
+
 const RESET_PASSWORD = 'Auth/RESET_PASSWORD';
-const RESET_PASSWORD_FAILURE = LOGOUT + '_FAILURE';
-const RESET_PASSWORD_REQUEST = LOGOUT + '_REQUEST';
-const RESET_PASSWORD_SUCCESS = LOGOUT + '_SUCCESS';
+const RESET_PASSWORD_FAILURE = RESET_PASSWORD + '_FAILURE';
+const RESET_PASSWORD_REQUEST = RESET_PASSWORD + '_REQUEST';
+const RESET_PASSWORD_SUCCESS = RESET_PASSWORD + '_SUCCESS';
 
 // Starting Data
 const initialState = {
@@ -38,9 +43,14 @@ const initialState = {
 
     sendingPassordResetEmail: false,
     passwordResetEmailError: null,
+    passwordResetEmailStatus: null,
+
+    registeringUser: false,
+    registerError: null,
 
     resettingPassword: false,
     resetPasswordError: null,
+    resetPasswordStatus: null,
 
     guest: true,
     user: null,
@@ -129,6 +139,7 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 sendingPassordResetEmail: true,
+                passwordResetEmailStatus: null,
             };
         }
 
@@ -145,6 +156,32 @@ export default function reducer(state = initialState, action = {}) {
                 ...state,
                 sendingPassordResetEmail: false,
                 passwordResetEmailError: null,
+                passwordResetEmailStatus: action.result.status,
+            };
+        }
+
+        // Register Response
+        case REGISTER_REQUEST: {
+            return {
+                ...state,
+                registeringUser: true,
+            };
+        }
+
+        case REGISTER_FAILURE: {
+            return {
+                ...state,
+                registeringUser: false,
+                registerError: action.error,
+            };
+        }
+
+        case REGISTER_SUCCESS: {
+            return {
+                ...state,
+                registeringUser: false,
+                registerError: null,
+                ...action.result,
             };
         }
 
@@ -153,6 +190,7 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 resettingPassword: true,
+                resetPasswordStatus: null,
             };
         }
 
@@ -165,10 +203,14 @@ export default function reducer(state = initialState, action = {}) {
         }
 
         case RESET_PASSWORD_SUCCESS: {
+            const { status, ...rest } = action.result;
+
             return {
                 ...state,
                 resettingPassword: false,
                 resetPasswordError: null,
+                resetPasswordStatus: status,
+                ...rest,
             };
         }
 
@@ -234,6 +276,22 @@ export function passwordResetEmail(fields) {
     return {
         type: PASSWORD_RESET_EMAIL,
         promise: (client) => client('/password/email', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'accept': 'application/json',
+            },
+            body: form,
+        }),
+    };
+}
+
+export function register(fields) {
+    const form = serialize(fields);
+
+    return {
+        type: REGISTER,
+        promise: (client) => client('/register', {
             method: 'POST',
             credentials: 'include',
             headers: {

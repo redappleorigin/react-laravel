@@ -29,6 +29,10 @@ class Email extends Component {
             email: props.validation.email || (props.auth.passwordResetEmailError && props.auth.passwordResetEmailError.email),
         };
 
+        const success = {
+            status: props.session.status || props.auth.passwordResetEmailStatus,
+        };
+
         return (
             <Container id="Password-Email">
                 <div class="row">
@@ -37,7 +41,7 @@ class Email extends Component {
                             <div class="panel-heading">Reset Password</div>
 
                             <div class="panel-body">
-                                <Form.AlertSuccess>{ props.session.status }</Form.AlertSuccess>
+                                <Form.AlertSuccess>{ success.status }</Form.AlertSuccess>
 
                                 <Form
                                     class="form-horizontal"

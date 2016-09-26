@@ -13,7 +13,7 @@ const HelpBlock = ({children}) => {
 };
 
 HelpBlock.propTypes = {
-    children: PropTypes.array,
+    children: PropTypes.node,
 };
 
 export default HelpBlock;

@@ -62,7 +62,7 @@ export default function promiseMiddleware() {
                     .response
                     .then((response) => {
                         console.error('MIDDLEWARE ERROR:', error);
-                
+
                         next({
                             ...rest,
                             error: response,
