@@ -10,7 +10,6 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use App\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Lang;
 
 class AuthController extends Controller
 {
@@ -116,6 +115,32 @@ class AuthController extends Controller
     }
 
     /**
+     * Redirect the user after determining they are locked out.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function sendLockoutResponse(Request $request)
+    {
+        $seconds = $this->secondsRemainingOnLockout($request);
+
+        if ($request->ajax() || $request->wantsJson())
+        {
+            $auth = [
+                $this->loginUsername() => $this->getLockoutErrorMessage($seconds),
+            ];
+
+            return response($auth, 429);
+        }
+
+        return redirect()->back()
+            ->withInput($request->only($this->loginUsername(), 'remember'))
+            ->withErrors([
+                $this->loginUsername() => $this->getLockoutErrorMessage($seconds),
+            ]);
+    }
+
+    /**
      * Get the failed login response instance.
      *
      * @param \Illuminate\Http\Request  $request
@@ -151,9 +176,42 @@ class AuthController extends Controller
                 'user' => null,
             ];
 
-            return response($auth, 201);
+            return response($auth, 200);
         }
 
         return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }
+
+        Auth::guard($this->getGuard())->login($this->create($request->all()));
+
+        if ($request->ajax() || $request->wantsJson())
+        {
+            $auth = [
+                'guest' => Auth::guest(),
+                'user' => [
+                    'name' => Auth::user()->name ?? null,
+                ],
+            ];
+
+            return response($auth, 201);
+        }
+
+        return redirect($this->redirectPath());
     }
 }

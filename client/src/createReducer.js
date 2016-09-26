@@ -1,16 +1,13 @@
 import { combineReducers } from 'redux';
 import { routerReducer as routing } from 'react-router-redux';
-
-const auth = (state = {
-    guest: true,
-    user: {},
-}, action) => state;
+import auth from './redux/Auth';
 
 // Only combine reducers needed for initial render, others will be
 // added async
 export default function createReducer (asyncReducers) {
-    const allReducers = [
-        'auth',
+    // These are blank reducers required for anything passed
+    // in the initial state
+    const intialReducers = [
         'csrf',
         'session',
         'validation',
@@ -23,7 +20,7 @@ export default function createReducer (asyncReducers) {
     return combineReducers({
         auth,
         routing,
-        ...allReducers,
+        ...intialReducers,
         ...asyncReducers,
     });
 }

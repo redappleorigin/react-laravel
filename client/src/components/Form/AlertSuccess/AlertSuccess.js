@@ -13,7 +13,7 @@ const AlertSuccess = ({children}) => {
 };
 
 AlertSuccess.propTypes = {
-    children: PropTypes.array,
+    children: PropTypes.node,
 };
 
 export default AlertSuccess;
